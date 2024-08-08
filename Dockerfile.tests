@@ -1,0 +1,17 @@
+FROM python:2.7-slim
+
+RUN apt-get update && \
+    apt-get install -y netcat-openbsd && \
+    apt-get clean
+
+WORKDIR /app
+COPY ./src/test/requirements.txt /app
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+COPY ./src/test /app
+COPY ./entrypoint_tests.sh /app
+RUN chmod +x /app/entrypoint_tests.sh
+
+EXPOSE 5000
+ENTRYPOINT ["/app/entrypoint_tests.sh"]
